@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from random import choice, sample
 import requests
 
@@ -13,27 +13,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     """Show the homepage and ask the user's name."""
-    return """
-    <form action='/fortune'>
-        <p>
-            What is your name?
-            <input type="text" name="name"/>
-        </p>
-        <p>
-            <input type="checkbox" name="show_fortune"/>
-            Show fortune
-        </p>
-        <p>
-            How many fortunes?
-            <select name="num_fortune">
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-        </p>
-        <button type="submit">Submit</button>
-    </form>
-    """
+    return render_template('index.html')
 
 
 @app.route('/fortune')
@@ -48,17 +28,14 @@ def get_fortune():
     name = request.args.get('name')
     num_fortune = int(request.args.get('num_fortune'))
     show_fortune = request.args.get('show_fortune')
-    all_fortunes = '</br> '.join(sample(fortunes, num_fortune))
+    all_fortunes = sample(fortunes, num_fortune)
 
     fortunes = []
     r = requests.get('http://yerkee.com/api/fortune',
                      headers={'Content-Type': 'application/json'})
     horoscope_item = r.json()['fortune']
 
-    if show_fortune:
-        return f'Hello there, {name}! Hey there, here are the fortunes that you requested:</br>  {all_fortunes}!'
-    else:
-        return f'Hello there, {name}! Have a nice day!'
+    return render_template('fortune.html', name=name, show_fortune=show_fortune,  all_fortunes=all_fortunes)
 
 
 if __name__ == '__main__':

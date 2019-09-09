@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+    Here is your fortune!
+{% endblock %}
+
+{% block content %}
+    {% if show_fortune %}
+    <p>
+        'Hello there, {{ name }}! Hey there, The fortune god has returned the
+        following fortunes:
+    </p>
+    <ul>
+        {% for fortune in all_fortunes %}
+        <li>{{ fortune }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Hello {{ name }}. I hope you have a nice day!</p>
+    {% endif %}
+{% endblock %}
